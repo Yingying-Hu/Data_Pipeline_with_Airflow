@@ -59,32 +59,32 @@ The requirement includes:
 * Do not email on retry
 
 ### Building the Operators 
-  
-![Data Pipeline DAG](https://user-images.githubusercontent.com/53353815/125149732-45aac080-e100-11eb-8813-bf94257f9615.png)
+ The graph view for the data pipeline DAG is:
+![data pipeline dag](https://user-images.githubusercontent.com/53353815/126557863-8ca5d2a5-ef3b-4e3c-9f8f-c5486f759e17.png)
 
-* **Load Song and Log Datasets**  
-The stage operator is expected to be able to **load any JSON formatted files from S3 to Amazon Redshift**. The operator creates and runs a SQL COPY statement based on the parameters provided. 
+* **Create Dataset and Load Source Data**  
+As the name suggested, the create table operator creates datastes in the Redshift cluster using SQL CREATE TABLE statement. Then, stage operator is expected to be able to **load any JSON formatted files from S3 to the Redshift tables**. The operator creates and runs a SQL COPY statement based on the parameters provided. 
   
     
 * **Data Modeling**  
-  - Fact Table  
-   1. **songplays** — records in log data associated with song plays i.e. records with page ```NextSong```  
-    *songplay_id, start_time, user_id, level, song_id, artist_id, session_id, location, user_agent*  
-  
-  - Dimension Tables
-   2. **songs** - songs in music database
-    *song_id, title, artist_id, year, duration*
-  
-   3. **users** - users in the app
-    *user_id, first_name, last_name, gender, level*
-
-   4. **artists** - artists in music database
-    *artist_id, name, location, lattitude, longitude*
-
-   5. **time** - timestamps of records in songplays broken down into specific units
-    *start_time, hour, day, week, month, year, weekday*  
+  1. Fact Table
+        *  **songplays** — records in log data associated with song plays i.e. records with page ```NextSong```       
+            *songplay_id, start_time, user_id, level, song_id, artist_id, session_id, location, user_agent*                    
+           
+  2. Dimension Tables 
+        * **songs** - songs in music database  
+            *song_id, title, artist_id, year, duration*
+        * **users** - users in the app  
+            *user_id, first_name, last_name, gender, level*
+        * **artists** - artists in music database  
+            *artist_id, name, location, lattitude, longitude*
+        * **time** - timestamps of records in songplays broken down into specific units  
+            *start_time, hour, day, week, month, year, weekday*  
       
 ![ER Diagram of Sparkify Database](https://user-images.githubusercontent.com/53353815/126517578-15371bfe-e73a-4247-860a-9505edd8e714.png)
 
 * **Data Quality**   
 The final operator to create is the data quality operator, which is used to run checks on the data itself. The operator's main functionality is to receive one or more SQL based test cases along with the expected results and execute the tests. For each the test, the test result and expected result needs to be checked and if there is no match, the operator should raise an exception and the task should retry and fail eventually.
+
+### Run the DAG
+![dag result](https://udacity-reviews-uploads.s3.us-west-2.amazonaws.com/_attachments/38715/1625810735/Untitled.png)
