@@ -39,14 +39,14 @@ And below is an example of what the data in a log file, 2018-11-12-events.json, 
 ![image](https://user-images.githubusercontent.com/53353815/126509464-1685e4a4-419b-44bf-bfbe-d6b706a85d5f.png)
 
 ## Environment Setup
-### [Redshift](create_redshift_cluster.ipynb)
+### [Redshift](environment_setup/create_redshift_cluster.ipynb)
 1. **Create an IAM role** that will be attached to the Redshift cluster to enable your cluster to load data from Amazon S3 buckets
 2. **Create a security group** for authorizing access to the Redshift cluster 
     > A security group will act as firewall rules for your Redshift cluster to control inbound and outbound traffic.
 3. **Launch a Redshift Cluster**
 4. **create an IAM user** that will be used to access your Redshift cluster.
 
-### [Add Airflow Connections](airflow_connections_instruction.md)
+### [Add Airflow Connections](environment_setup/airflow_connections_instruction.md)
 Use Airflow's UI to configure your AWS credentials and connection to Redshift.  
 
 ## Detailed Steps for building the Data Pipeline on Apache Airflow
@@ -59,6 +59,7 @@ The requirement includes:
 * Do not email on retry
 
 ### Building the Operators 
+  
 ![Data Pipeline DAG](https://user-images.githubusercontent.com/53353815/125149732-45aac080-e100-11eb-8813-bf94257f9615.png)
 
 * **Load Song and Log Datasets**  
@@ -81,8 +82,9 @@ The stage operator is expected to be able to **load any JSON formatted files fro
     *artist_id, name, location, lattitude, longitude*
 
    5. **time** - timestamps of records in songplays broken down into specific units
-    *start_time, hour, day, week, month, year, weekday*
+    *start_time, hour, day, week, month, year, weekday*  
+      
+![ER Diagram of Sparkify Database](https://user-images.githubusercontent.com/53353815/126517578-15371bfe-e73a-4247-860a-9505edd8e714.png)
 
-![image](https://user-images.githubusercontent.com/53353815/126517578-15371bfe-e73a-4247-860a-9505edd8e714.png)
-
-
+* **Data Quality**   
+The final operator to create is the data quality operator, which is used to run checks on the data itself. The operator's main functionality is to receive one or more SQL based test cases along with the expected results and execute the tests. For each the test, the test result and expected result needs to be checked and if there is no match, the operator should raise an exception and the task should retry and fail eventually.
